@@ -50,7 +50,7 @@ If you need to review JavaScript, we recommend reading this guide.
 もしJavaScriptについて確認したいことがあるなら、[このガイド](https://developer.mozilla.org/en-US/docs/Web/JavaScript/A_re-introduction_to_JavaScript)を読むことをお勧めします。
 また、我々はES6（JavaScriptの最近のバージョン）のいくつかの機能を使用します。
 このチュートリアルでは、アロー関数、classes、let、const の文法を使用します。
-(Babel REPL)[https://babeljs.io/repl/#?presets=react&code_lz=MYewdgzgLgBApgGzgWzmWBeGAeAFgRgD4AJRBEAGhgHcQAnBAEwEJsB6AwgbgChRJY_KAEMAlmDh0YWRiGABXVOgB0AczhQAokiVQAQgE8AkowAUAcjogQUcwEpeAJTjDgUACIB5ALLK6aRklTRBQ0KCohMQk6Bx4gA]を使用すれば、どのようなES6コードがコンパイルされるか確認できます。
+[Babel REPL](https://babeljs.io/repl/#?presets=react&code_lz=MYewdgzgLgBApgGzgWzmWBeGAeAFgRgD4AJRBEAGhgHcQAnBAEwEJsB6AwgbgChRJY_KAEMAlmDh0YWRiGABXVOgB0AczhQAokiVQAQgE8AkowAUAcjogQUcwEpeAJTjDgUACIB5ALLK6aRklTRBQ0KCohMQk6Bx4gA)を使用すれば、どのようなES6コードがコンパイルされるか確認できます。
 
 ## セットアップ / Setup for the Tutorial
 
