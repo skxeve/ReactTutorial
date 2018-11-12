@@ -18,19 +18,22 @@
 - **ゲームを完成させる** React開発における最も基礎的な技術。
 - **タイムトラベルの追加** Reactが得意なことについてのより深い理解。
 
-一度でチュートリアルを完了する必要はありません。１セクションずつでも、できる速度で学習しましょう。
+一度でチュートリアルを完了する必要はありません。１セクションずつでも、無理のない速度で学習しましょう。
 
-チュートリアルはコピペでも動くようになっていますが、手打ちで進めることを推奨します。体で覚え、深い理解を得るにはそれが一番です。
+チュートリアルはコピペでも動くようになっていますが、手打ちで進めることを推奨します。
+体で覚え、深い理解を得るにはそれが一番です。
 
 ### 何を作るのか？ / What Are We Building?
 
 インタラクティブなtic-tac-toeゲーム[^1]をReactで作ります。
 
 最終的な結果を[こちら](https://codepen.io/gaearon/pen/gWWZgR?editors=0010)で確認することができます。
-もしコードが理解できなかったり、文法に親近感を感じなくても、心配はいりません。
+もし今の段階でコードが理解できなかったり、文法に親近感を感じなくても、心配はいりません。
 チュートリアルを完了する頃には、きっとReactと文法を理解できるでしょう。
 
-チュートリアルを続ける前に、tic-tac-toeゲームを遊んでみることをお勧めします。One of the features that you’ll notice is that there is a numbered list to the right of the game’s board. This list gives you a history of all of the moves that have occurred in the game, and is updated as the game progresses.
+チュートリアルを続ける前に、tic-tac-toeゲームを遊んでみることをお勧めします。
+あなたが注意すべき特徴の一つは、番号付きリストがゲームボードの右側に表示されていることでしょう。
+このリストはあなたにゲーム中に起きた全ての手の履歴をあなたに提示し、ゲームの進行にあわせて更新されます。
 
 tic-tac-gameがどういうゲームかを理解したら終了しましょう。
 このチュートリアルでは、シンプルなテンプレートから始めます。
@@ -40,9 +43,14 @@ tic-tac-gameがどういうゲームかを理解したら終了しましょう�
 
 ### 前提条件 / Prerequisites
 
-We’ll assume that you have some familiarity with HTML and JavaScript, but you should be able to follow along even if you’re coming from a different programming language. We’ll also assume that you’re familiar with programming concepts like functions, objects, arrays, and to a lesser extent, classes.
+我々はあなたが多少はHTMLとJavaScriptに親しんでいることを想定していますが、別のプログラミング言語のみに親しんでいた場合でもそれほど問題はないはずです。
+また、あなたがプログラミングにおける関数、オブジェクト、配列、小規模なクラス、くらいのプログラミングの概念に親しんでいることを想定しています。
 
-If you need to review JavaScript, we recommend reading this guide. Note that we’re also using some features from ES6 — a recent version of JavaScript. In this tutorial, we’re using arrow functions, classes, let, and const statements. You can use the Babel REPL to check what ES6 code compiles to.
+If you need to review JavaScript, we recommend reading this guide.
+もしJavaScriptについて確認したいことがあるなら、[このガイド](https://developer.mozilla.org/en-US/docs/Web/JavaScript/A_re-introduction_to_JavaScript)を読むことをお勧めします。
+また、我々はES6（JavaScriptの最近のバージョン）のいくつかの機能を使用します。
+このチュートリアルでは、アロー関数、classes、let、const の文法を使用します。
+(Babel REPL)[https://babeljs.io/repl/#?presets=react&code_lz=MYewdgzgLgBApgGzgWzmWBeGAeAFgRgD4AJRBEAGhgHcQAnBAEwEJsB6AwgbgChRJY_KAEMAlmDh0YWRiGABXVOgB0AczhQAokiVQAQgE8AkowAUAcjogQUcwEpeAJTjDgUACIB5ALLK6aRklTRBQ0KCohMQk6Bx4gA]を使用すれば、どのようなES6コードがコンパイルされるか確認できます。
 
 ## セットアップ / Setup for the Tutorial
 
@@ -156,19 +164,19 @@ ShoppingListコンポーネントは内包された<div />や<li />といったD
 
 ### Propsを使ったデータの受け渡し / Passing Data Through Props
 
-### Making an Interactive Component
-### Developer Tools
+### 対話的なコンポーネントの作成 / Making an Interactive Component
+### 開発ツール / Developer Tools
 
-## Completing the Game
-### Lifting State Up
+## ゲームを完成させよう / Completing the Game
+### 状態を移譲する / Lifting State Up
 ### 不変性の重要さ / Why Immutability Is Important
-### Function Components
-### Taking Turns
-### Declaring a Winner
-## Adding Time Travel
-### Storing a History of Moves
-### Lifting State Up, Again
-### Showing the Past Moves
-### Picking a Key
-### Implementing Time Travel
-### Wrapping Up
+### 関数コンポーネント / Function Components
+### ターンを取得する / Taking Turns
+### 勝者を定義する / Declaring a Winner
+## 時間遡行機能を追加する / Adding Time Travel
+### 動作の履歴を記録する / Storing a History of Moves
+### 再び、状態を移譲する / Lifting State Up, Again
+### 過去の動作を表示する / Showing the Past Moves
+### ピッキング / Picking a Key
+### 時間遡行を実装する / Implementing Time Travel
+### ラッピング / Wrapping Up
