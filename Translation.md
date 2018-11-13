@@ -1,4 +1,4 @@
-# チュートリアル：React事始め
+# [チュートリアル：React事始め](https://reactjs.org/tutorial/tutorial.html)
 
 このチュートリアルでは、既存のReact知識は想定していません。
 
@@ -46,7 +46,6 @@ tic-tac-gameがどういうゲームかを理解したら終了しましょう�
 我々はあなたが多少はHTMLとJavaScriptに親しんでいることを想定していますが、別のプログラミング言語のみに親しんでいた場合でもそれほど問題はないはずです。
 また、あなたがプログラミングにおける関数、オブジェクト、配列、小規模なクラス、くらいのプログラミングの概念に親しんでいることを想定しています。
 
-If you need to review JavaScript, we recommend reading this guide.
 もしJavaScriptについて確認したいことがあるなら、[このガイド](https://developer.mozilla.org/en-US/docs/Web/JavaScript/A_re-introduction_to_JavaScript)を読むことをお勧めします。
 また、我々はES6（JavaScriptの最近のバージョン）のいくつかの機能を使用します。
 このチュートリアルでは、アロー関数、classes、let、const の文法を使用します。
@@ -130,13 +129,9 @@ class ShoppingList extends React.Component {
 このShoppingListはReact component class、またはReact component typeです。
 componentはprops（propertiesの略）と呼ばれるパラメータを内部に取り込み、renderメソッドの戻り値としてview描画の階層を返却します。
 
-The render method returns a description of what you want to see on the screen.
 renderメソッドはあなたがどうレンダリングしたいかの詳細を返却します。
- React takes the description and displays the result.
 Reactはそれを受け取り、その結果を表示します。
-In particular, render returns a React element, which is a lightweight description of what to render.
 特にrenderメソッドが返却するのは、軽量なレンダリング情報であるReact elementです。
-  Most React developers use a special syntax called “JSX” which makes these structures easier to write.
 ほとんどのReact開発者達は、これらの構造を容易に記述できる、JSXと呼ばれる特別な構文を使います。
 JSXで記述した <div /> 構文は、ビルド時に React.createElement('div') に変換されます。
 先ほどの例と、下の例は同じレンダリング結果をもたらします。
