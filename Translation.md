@@ -152,14 +152,55 @@ JSXにはJavaScriptのフルパワーがあります。
 JSXの括弧の内側にはあらゆるJavaScriptを記述できます。
 ReactElementは変数に格納でき、プログラム内で受け渡し可能なJavaScriptオブジェクトです。
 
-ShoppingListコンポーネントは内包された<div />や<li />といったDOMコンポーネントを単にレンダリングするものです。
+ShoppingListコンポーネントは内包された<div /\>や<li /\>といったDOMコンポーネントを単にレンダリングするものです。
 あなたは同じようにしてカスタムReactコンポーネントを作成し、レンダリングすることができます。
 例えば、<ShoppingList /> と記述することで、ショッピングリストを参照することができます。
 各Reactコンポーネントはカプセル化され、独立して操作できます。これがシンプルなコンポーネント群から複雑なUIを構築することを可能にしています。
 
 ### Propsを使ったデータの受け渡し / Passing Data Through Props
 
+手始めに、BoardコンポーネントからSquareコンポーネントにデータを受け渡してみましょう。
+BoardのrenderSquareメソッドのコードを、引数で渡されたpropsをSquareに渡すように変更します。
+
+```
+class Board extends React.Component {
+  renderSquare(i) {
+    return <Square value={i} />;
+  }
+```
+
+Squareコンポーネントのrenderメソッドを {/\* TODO \*/} で書かれたところを {this.props.value} に置き換え、先ほどの値を表示するように修正します。
+
+```
+class Square extends React.Component {
+  render() {
+    return (
+      <button className="square">
+        {this.props.value}
+      </button>
+    );
+  }
+}
+```
+
+変更前：
+
+<img width="250" alt="Before screenshot" src="https://reactjs.org/static/tictac-empty-1566a4f8490d6b4b1ed36cd2c11fe4b6-a9336.png">
+
+変更後：レンダリングされた結果、各四角形の中に数値が表示されるようになったはずです。t.
+
+<img width="250" alt="After screenshot" src="https://reactjs.org/static/tictac-numbers-685df774da6da48f451356f33f4be8b2-be875.png">
+
+[View the full code at this point](https://codepen.io/gaearon/pen/aWWQOG?editors=0010)
+
+おめでとう！
+あなたは親のBoardコンポーネントから子のSquareコンポーネントに「propを受け渡す」ことができました。
+親から子へのpropsの受け渡しは、Reactアプリにおいて情報が移動するための方法です。
+
 ### 対話的なコンポーネントの作成 / Making an Interactive Component
+
+
+
 ### 開発ツール / Developer Tools
 
 ## ゲームを完成させよう / Completing the Game
