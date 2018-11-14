@@ -8,8 +8,8 @@
 **ゲームを作りたいわけではないから飛ばしてしまおうと思うかもしれませんが、それでも試してみてください。**
 このチュートリアルを通して習得する技術は、様々なReactアプリを作るための基礎的なものであり、マスターすることでReactについて深い理解を得られるでしょう。
 
-*Tips*
-*このチュートリアルは、手を動かして学ぶことを好む人向けに作られています。*
+>Tips<br>
+>このチュートリアルは、手を動かして学ぶことを好む人向けに作られています。
 
 チュートリアルはいくつかのセクションに分かれています。
 
@@ -187,7 +187,7 @@ class Square extends React.Component {
 
 <img width="250" alt="Before screenshot" src="https://reactjs.org/static/tictac-empty-1566a4f8490d6b4b1ed36cd2c11fe4b6-a9336.png">
 
-変更後：レンダリングされた結果、各四角形の中に数値が表示されるようになったはずです。t.
+変更後：レンダリングされた結果、各四角形の中に数値が表示されるようになったはずです。
 
 <img width="250" alt="After screenshot" src="https://reactjs.org/static/tictac-numbers-685df774da6da48f451356f33f4be8b2-be875.png">
 
@@ -198,6 +198,40 @@ class Square extends React.Component {
 親から子へのpropsの受け渡しは、Reactアプリにおいて情報が移動するための方法です。
 
 ### 対話的なコンポーネントの作成 / Making an Interactive Component
+
+クリックしたらSquareコンポーントを”X”で埋めるようにしましょう。
+まず、Squareコンポーネントのrenderメソッドで返却されるボタンタグを変更します。
+
+```
+class Square extends React.Component {
+  render() {
+    return (
+      <button className="square" onClick={function() { alert('click'); }}>
+        {this.props.value}
+      </button>
+    );
+  }
+}
+```
+
+これでSquareをクリックすると、ブラウザ上にアラートが表示されるでしょう。
+
+
+>Note:  
+タイプ数を節約し、動作をわかりやすくするため、今後は以下のようにしてアロー関数をイベントハンドラに使用します。
+```
+class Square extends React.Component {
+ render() {
+   return (
+     <button className="square" onClick={() => alert('click')}>
+       {this.props.value}
+     </button>
+   );
+ }
+}
+```
+`onClick={() => alert('click')}` これは、onClick propに関数を渡していることに注意してください。
+それはクリック後にのみ発生します。`()=>` を忘れ、 `onClick={alert('click')}` と書いてしまうのはよくあるミスで、そうするとcomponentがレンダリングされる度にalertを発生させます。
 
 
 
