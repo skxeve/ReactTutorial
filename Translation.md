@@ -233,7 +233,76 @@ class Square extends React.Component {
 `onClick={() => alert('click')}` これは、onClick propに関数を渡していることに注意してください。
 それはクリック後にのみ発生します。`()=>` を忘れ、 `onClick={alert('click')}` と書いてしまうのはよくあるミスで、そうするとcomponentがレンダリングされる度にalertを発生させます。
 
+次のステップでは、Squareコンポーネントにクリックされたことを”覚えておいて”もらい、”X”マークを表示させる。
+”覚えておいて”とはつまり、コンポーネントがstateを使うということだ。
 
+Reactコンポーネントはコンストラクタで`this.state`を設定することで状態を保持することができる。
+`this.state`は定義されたReactコンポーネントの中でprivateとなる。
+現在の値をSquareコンポーネントの`this.state`に保管し、Squareがクリックされたら変更する。
+
+まず、コンストラクタをSquareコンポーネントのクラスに定義し、stateを初期化する。
+
+```
+class Square extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      value: null,
+    };
+  }
+
+  render() {
+    return (
+      <button className="square" onClick={() => alert('click')}>
+        {this.props.value}
+      </button>
+    );
+  }
+}
+```
+
+>Note
+JavaScriptのクラスでは、サブクラスのconstructorを定義する時には必ずsuperをコールしなければなりません。
+全てのconstructorを持つReactコンポーネントクラスは、super(props)のコールから始めます。
+
+Now we’ll change the Square’s render method to display the current state’s value when clicked:
+次のようにSquareのrenderメソッドを変更したら、クリックすると現在のstateが表示されるようになるはずです。
+
+- `<button>`タグ内の`this.props.value`を`this.state.value`に変更する。
+- `() => alert()`イベントハンドラを`() => this.setState({value: 'X'})`にする。
+- 可読性のため`className`と`onClick`の記述を違う行にする。
+
+これらの変更が済んだら、以下のようにSquareのrenderメソッドが`<button>`タグを返すようになるでしょう。
+
+```
+class Square extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      value: null,
+    };
+  }
+
+  render() {
+    return (
+      <button
+        className="square"
+        onClick={() => this.setState({value: 'X'})}
+      >
+        {this.state.value}
+      </button>
+    );
+  }
+}
+```
+
+SquareのrenderメソッドにあるonClickハンドラによりthis.setStateがコールされることで、いつでもボタンがクリックされるとReactがレンダリングを行うよう指示します。
+更新後、Squareのthis.state.valueはXとなり、Xがゲームボード上に現れます。
+どれでもSquareをクリックすると、そこにXが表示されます。
+
+コンポーネントのsetStateをコールすると、Reactは自動的に子コンポーネントも更新します。
+
+[この時点でのコード](https://codepen.io/gaearon/pen/VbbVLg?editors=0010)
 
 ### 開発ツール / Developer Tools
 
