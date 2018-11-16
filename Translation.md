@@ -265,7 +265,6 @@ class Square extends React.Component {
 JavaScriptのクラスでは、サブクラスのconstructorを定義する時には必ずsuperをコールしなければなりません。
 全てのconstructorを持つReactコンポーネントクラスは、super(props)のコールから始めます。
 
-Now we’ll change the Square’s render method to display the current state’s value when clicked:
 次のようにSquareのrenderメソッドを変更したら、クリックすると現在のstateが表示されるようになるはずです。
 
 - `<button>`タグ内の`this.props.value`を`this.state.value`に変更する。
@@ -306,8 +305,217 @@ SquareのrenderメソッドにあるonClickハンドラによりthis.setStateが
 
 ### 開発ツール / Developer Tools
 
+[Chrome](https://chrome.google.com/webstore/detail/react-developer-tools/fmkadmapgofadopljbjfkapdkoienihi?hl=en)と[Firefox](https://addons.mozilla.org/en-US/firefox/addon/react-devtools/)向けの開発者ツールは、あなたのブラウザのデベロッパーツールでReactコンポーネントの検査をしてくれます。
+
+<img width="300" alt="DOM developer view." src="https://reactjs.org/static/devtools-878d91461c78d8f238e116477dfe0b46-6ca3b.png">
+
+The React DevTools let you check the props and the state of your React components.
+React開発ツールではReactコンポーネントのpropsとstateを確認できます。
+
+インストールしたら、ページ上の要素上で右クリックをして、”Inspect”をクリックし、開発者ツールを開いてください。
+Reactタブが最後のタブの右に現れます。
+
+**いくつかの手順を踏むことでCodePenと一緒に動くようになる**
+
+- ログインまたは登録し、メールを確認する。（スパムを防ぐため）
+- “Fork”ボタンをクリックする。
+- “Change View”をクリックし、“Debug mode”を選択する。
+- 新規タブを開くと、開発者ツールにReactタブが表示されている。
+
 ## ゲームを完成させよう / Completing the Game
+
+これでtic-tac-gameの基礎的なブロック構成ができました。
+完成させるためには、”X”と”O”を交互にボード上に置くようにし、勝者を決定する必要があります。
+
 ### 状態を移譲する / Lifting State Up
+
+各Squareコンポーネントはゲームの状態を維持しています。
+勝者をチェックするには、一箇所で9個のSquareの値を参照しなければなりません。
+
+Boardが各Squareにそのstateを聞いて回れば良いと考えるかもしれません。
+その方法はReactでも可能ですが、残念な方法です。コードは難しく理解しにくくなり、バグを産みやすく、リファクタリングを困難にします。
+そうではなく、親であるBoardコンポーネントが各Squareコンポーネントの代わりにゲームの状態を持つのです。
+Boardコンポーネントは各Squareコンポーネントにpropを受け渡すことで、何を表示すべきか伝えることができます。そう、先ほど数値を各Squareに受け渡したようにです。
+
+**子コンポーネント群からデータを集める、または子コンポーネント同士でコミュニケーションするとき、あなたは共有するstateを親コンポーネントに定義する必要に迫られるでしょう。**
+**親コンポーネントはstateをpropsを使って子に元通りパスできます。それによって子同士、または親子コンポーネントの間で同期を行います。**
+
+Reactコンポーネントをリファクタし、親コンポーネントにstateを持ち上げることは一般的です。この機会にそれを試してみましょう。
+Boardコンポーネントにconstructorを追加し、Boardの初期stateに9個のnullが含まれる配列を宣言しましょう。
+この9nullが9squareに対応します。
+
+```
+constructor(props) {
+  super(props);
+  this.state = {
+    squares: Array(9).fill(null),
+  };
+}
+```
+
+修正後にボードを埋めると、下記のような感じになるはずです。
+
+```
+[
+  'O', null, 'X',
+  'X', 'X', 'O',
+  'O', null, null,
+]
+```
+
+BoardのrenderSquareメソッドは以下のようになっているはずです
+
+```
+renderSquare(i) {
+  return <Square value={i} />;
+}
+```
+
+はじめに、Boardから0~8番のSquareに向けて値を受け渡しています。
+別の以前のステップでは、各Squareに定義された固有のstateを、”X”に置換していました。
+これはSquareはBoardから渡された値を無視しているためです。
+
+我々は再度、propを受け渡す方法を使用します。
+Boardを各Squareに、現在の値を'X'か'O'かnullだと命令するよう編集します。
+先ほどBoardのconstructorで定義したsquares配列から値を読み取るよう、renderSquareメソッドを編集しましょう。
+
+```
+renderSquare(i) {
+  return <Square value={this.state.squares[i]} />;
+}
+```
+
+[現時点での全コードはこちら](https://codepen.io/gaearon/pen/gWWQPY?editors=0010)
+
+各Squareは'X'か'O'かnullのいずれかのprop値を受け取ります。
+
+次に、Squareがクリックされた時にその変更をする必要があります。
+Boardコンポーネントは現在、squaresを埋めている値を持っています。
+SquareがBoardのstateを変更する手段を用意しなければなりません。
+もちろんstateはcomponentごとにprivateに定義されているため、SquareからBoardのstate値を直接変更することはできません。
+
+Boardのstateをprivateに保つため、BoardからSquareに関数を渡します。
+その関数はSquareがクリックされた時に呼び出される想定です。
+BoardのrenderSquareを以下のように変更します。
+
+```
+renderSquare(i) {
+  return (
+    <Square
+      value={this.state.squares[i]}
+      onClick={() => this.handleClick(i)}
+    />
+  );
+}
+```
+
+>Note
+我々は返却する要素を可読性のために複数行に分割し、JavaScriptがreturnの後にセミコロンを挿入しないように括弧を追加しました。
+
+これでBoardからSquareに、valueとonClickの2個のpropsが受け渡されるようになりました。
+onClickはSquareがクリックされた時にコールできる関数です。
+これからSquareに以下の変更を加えていきます。
+
+- renderメソッドの`state.this.value`を`this.props.value`に変更します。
+- renderメソッドの`this.setState()`を`this.props.onClick`に変更します。
+- constructorを削除します。もうゲームの状態を管理することはありません。
+
+これらの変更を終えて、Squareコンポーネントは以下のようになります。
+
+```
+class Square extends React.Component {
+  render() {
+    return (
+      <button
+        className="square"
+        onClick={() => this.props.onClick()}
+      >
+        {this.props.value}
+      </button>
+    );
+  }
+}
+```
+
+Squareがクリックされると、Boardから渡されたonClickメソッドが実行されます。
+これがどのように達成されたかおさらいしてみましょう。
+
+1. `<button>`DOMコンポーネントの`onClick`propが、Reactにクリックイベントリスナーの設定をさせた。
+2.  ボタンがクリックされると、ReactがSquareの`render()`メソッドに定義された`onClick`イベントハンドラをコールする。
+3. イベントハンドラが`this.props.onClick`をコールし、Squareの`onClick`propがBoardによって設定された。
+4. BoardはSquareに`onClick={() => this.handleClick(i)}`を受け渡し、Squareは`this.handleClick(i)`がクリックされた時にそれを実行した。
+5. `handleClick()`メソッドを定義していなかったため、クラッシュした。
+
+>Note
+要素を複数行に分解して記述しているのは、可読性のためと、JavaScriptが括弧をreturnの後ろに挿入しないようにするためです。
+
+Squareをクリックすると、エラーが発生するでしょう。まだhandleClickを定義していないためです。
+これからhandleClickを追加していきます。
+
+```
+class Board extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      squares: Array(9).fill(null),
+    };
+  }
+
+  handleClick(i) {
+    const squares = this.state.squares.slice();
+    squares[i] = 'X';
+    this.setState({squares: squares});
+  }
+
+  renderSquare(i) {
+    return (
+      <Square
+        value={this.state.squares[i]}
+        onClick={() => this.handleClick(i)}
+      />
+    );
+  }
+
+  render() {
+    const status = 'Next player: X';
+
+    return (
+      <div>
+        <div className="status">{status}</div>
+        <div className="board-row">
+          {this.renderSquare(0)}
+          {this.renderSquare(1)}
+          {this.renderSquare(2)}
+        </div>
+        <div className="board-row">
+          {this.renderSquare(3)}
+          {this.renderSquare(4)}
+          {this.renderSquare(5)}
+        </div>
+        <div className="board-row">
+          {this.renderSquare(6)}
+          {this.renderSquare(7)}
+          {this.renderSquare(8)}
+        </div>
+      </div>
+    );
+  }
+}
+```
+
+[現時点での全コードはこちら](https://codepen.io/gaearon/pen/ybbQJX?editors=0010)
+
+これらの変更が終わると、再びSquareをクリックし、空白を埋められるようになります。
+状態は各SquareではなくBoardコンポーネントに保持されています。
+Boardのstateを変更すれば、Squareコンポーネントは自動的にレンダリングします。
+Boardで全ての状態を管理することで、我々は勝者を決めることができるようになりました。
+
+Squareコンポーネントが状態を管理しないようになり、それはBoardから値を受け取り、クリックされた時にBoardに通知を送るようになりました。
+React用語で、このようなSquareコンポーネントのことを **管理されたコンポーネント（controlled components）** と呼びます。Boardが完全に彼らをコントロールしています。
+
+handleClickの処理の中で、既存のsquares配列ではなく、`.slice()`を実行してsquares配列のコピーを作成していることに注意しておいてください。
+次のセクションでその理由を説明します。
+
 ### 不変性の重要さ / Why Immutability Is Important
 ### 関数コンポーネント / Function Components
 ### ターンを取得する / Taking Turns
