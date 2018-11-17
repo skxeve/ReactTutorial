@@ -416,7 +416,7 @@ renderSquare(i) {
 onClickはSquareがクリックされた時にコールできる関数です。
 これからSquareに以下の変更を加えていきます。
 
-- renderメソッドの`state.this.value`を`this.props.value`に変更します。
+- renderメソッドの`this.state.value`を`this.props.value`に変更します。
 - renderメソッドの`this.setState()`を`this.props.onClick`に変更します。
 - constructorを削除します。もうゲームの状態を管理することはありません。
 
