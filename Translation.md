@@ -517,7 +517,59 @@ handleClickの処理の中で、既存のsquares配列ではなく、`.slice()`�
 次のセクションでその理由を説明します。
 
 ### 不変性の重要さ / Why Immutability Is Important
+
+先ほどのコードで、`.slice()`を使用してsquares配列のコピーを作成し、既存の配列を編集する代わりにコピーを編集しました。
+これから、不変性についてと、その重要性について学んでいきます。
+
+一般的に、データを変更するには二つの方法があります。
+一つは、データの値を直接変更すること。もう一つは、変更を加えた新しいコピーで置き換えることです。
+
+
+#### データを直接変更する / Data Change with Mutation
+```
+var player = {score: 1, name: 'Jeff'};
+player.score = 2;
+// Now player is {score: 2, name: 'Jeff'}
+```
+
+#### データを直接でなく変更する / Data Change without Mutation
+```
+var player = {score: 1, name: 'Jeff'};
+
+var newPlayer = Object.assign({}, player, {score: 2});
+// Now player is unchanged, but newPlayer is {score: 2, name: 'Jeff'}
+
+// Or if you are using object spread syntax proposal, you can write:
+// var newPlayer = {...player, score: 2};
+```
+
+この二つは結果は同じですが、データを直接でない方法で変更することで、次に説明するいくつかの利点を享受することができます。
+
+#### 複雑な機能をシンプルに / Complex Features Become Simple
+不変性により、複雑な機能を実装するのがとても容易になります。
+この後、私達はtic-tac-gameに、以前の状態へと履歴から遡ることができる「時間遡行」機能を実装します。
+この機能はゲーム特有のものではなく、UndoやRedoといった一般的なアプリケーションにも実装されている機能です。
+直接のデータ変更を避けることで、以前のゲームの状態を保存しておき、後で再利用することができます。
+
+
+#### 変更の検出 / Detecting Changes
+直接変更される場合、変更可能なオブジェクトの変更を検知することは困難です。
+検知には変更可能なオブジェクトを、それ自身と、オブジェクトツリー全体を以前の状態のコピーと比較する必要があります。
+
+不変なオブジェクトの変更を検知するのは簡単です。
+参照される不変オブジェクトが直前のものと異なる場合、それは変更されています。
+
+
+#### いつReactのレンダリングが発生するかを決定できる / Determining When to Re-render in React
+不変性による最も大きなメリットは、あなたが純粋なコンポーネントを作成することを助けてくれることです。
+不変なデータは、それに変更があった時に、いつコンポーネントがレンダリングを実行するかを容易に決定できます。
+
+もし`shouldComponentUpdate()`についてもっと詳しく知りたければ、そして純粋なコンポーネントを作成する方法を知りたければ、こちらの[パフォーマンスの最適化](https://reactjs.org/docs/optimizing-performance.html#examples)を読んでみてください。
+
 ### 関数コンポーネント / Function Components
+
+
+
 ### ターンを取得する / Taking Turns
 ### 勝者を定義する / Declaring a Winner
 ## 時間遡行機能を追加する / Adding Time Travel
