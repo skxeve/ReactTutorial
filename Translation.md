@@ -568,7 +568,30 @@ var newPlayer = Object.assign({}, player, {score: 2});
 
 ### 関数コンポーネント / Function Components
 
+Squareを関数コンポーネントにしていきます。
 
+Reactにおいて、関数コンポーネントはrenderメソッドのみを持ち、stateを持たないコンポーネントを記述するシンプルな方法です。
+クラスを定義する代わりに、受け渡されるpropsをレンダリングする関数を記述できます。
+関数コンポーネントはクラスを記述するのに比べて退屈しません。そして多くのコンポーネントは関数で記述できます。
+
+Squareクラスを以下のようなメソッドに置換していきます。
+
+```
+function Square(props) {
+  return (
+    <button className="square" onClick={props.onClick}>
+      {props.value}
+    </button>
+  );
+}
+```
+`this.props`を`props`に変更しています。
+
+**[現時点での全コードはこちらです](https://codepen.io/gaearon/pen/QvvJOv?editors=0010)**
+
+>Note
+Squareを関数コンポーネントに置換するにあたり、`onClick={() => this.props.onClick()}`を、短く`onClick={props.onClick}`に変更しました。
+クラスでは値にアクセスするのにアロー関数を使用しましたが、関数コンポーネントではその必要はありません。
 
 ### ターンを取得する / Taking Turns
 ### 勝者を定義する / Declaring a Winner
