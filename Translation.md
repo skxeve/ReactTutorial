@@ -587,13 +587,108 @@ function Square(props) {
 ```
 `this.props`を`props`に変更しています。
 
-**[現時点での全コードはこちらです](https://codepen.io/gaearon/pen/QvvJOv?editors=0010)**
+**[現時点での全コード](https://codepen.io/gaearon/pen/QvvJOv?editors=0010)**
 
 >Note
 Squareを関数コンポーネントに置換するにあたり、`onClick={() => this.props.onClick()}`を、短く`onClick={props.onClick}`に変更しました。
 クラスでは値にアクセスするのにアロー関数を使用しましたが、関数コンポーネントではその必要はありません。
 
 ### ターンを取得する / Taking Turns
+
+そろそろ我々のtic-tac-toeゲームの、"O"がボード上にマークできないという、明らかな欠陥を修正しましょう。
+
+初手はデフォルトで"X"になります。Boardコンポーネントのコンストラクタでstateを初期化することで、このデフォルト値を変更できます。
+
+```
+class Board extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      squares: Array(9).fill(null),
+      xIsNext: true,
+    };
+  }
+```
+プレイヤーが動くたびに、`xIsNext` (a boolean) の値を反転させ、次のプレイヤーを決定し、ゲームの状態を保存します。
+Boardの`handleClick` 関数を、`xIsNext`変数を反転させるように修正しましょう。
+
+```
+  handleClick(i) {
+    const squares = this.state.squares.slice();
+    squares[i] = this.state.xIsNext ? 'X' : 'O';
+    this.setState({
+      squares: squares,
+      xIsNext: !this.state.xIsNext,
+    });
+  }
+```
+この変更で、"X"と"O"が交互に使用されます。
+それでは、Boardのレンダリングで、次のプレイヤーを表示するよう修正してみましょう。
+
+```
+  render() {
+    const status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
+
+    return (
+      // the rest has not changed
+```
+この変更を行うと、以下のようなBoardコンポーネントになっているはずです。
+```
+class Board extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      squares: Array(9).fill(null),
+      xIsNext: true,
+    };
+  }
+
+  handleClick(i) {
+    const squares = this.state.squares.slice();
+    squares[i] = this.state.xIsNext ? 'X' : 'O';
+    this.setState({
+      squares: squares,
+      xIsNext: !this.state.xIsNext,
+    });
+  }
+
+  renderSquare(i) {
+    return (
+      <Square
+        value={this.state.squares[i]}
+        onClick={() => this.handleClick(i)}
+      />
+    );
+  }
+
+  render() {
+    const status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
+
+    return (
+      <div>
+        <div className="status">{status}</div>
+        <div className="board-row">
+          {this.renderSquare(0)}
+          {this.renderSquare(1)}
+          {this.renderSquare(2)}
+        </div>
+        <div className="board-row">
+          {this.renderSquare(3)}
+          {this.renderSquare(4)}
+          {this.renderSquare(5)}
+        </div>
+        <div className="board-row">
+          {this.renderSquare(6)}
+          {this.renderSquare(7)}
+          {this.renderSquare(8)}
+        </div>
+      </div>
+    );
+  }
+}
+```
+**[現時点での全コード](https://codepen.io/gaearon/pen/KmmrBy?editors=0010)**
+
 ### 勝者を定義する / Declaring a Winner
 ## 時間遡行機能を追加する / Adding Time Travel
 ### 動作の履歴を記録する / Storing a History of Moves
