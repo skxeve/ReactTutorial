@@ -690,6 +690,72 @@ class Board extends React.Component {
 **[現時点での全コード](https://codepen.io/gaearon/pen/KmmrBy?editors=0010)**
 
 ### 勝者を定義する / Declaring a Winner
+
+次のターンのプレイヤーが誰かを表示できるようになったので、次はゲームが終了したら勝者を表示するようにしましょう。
+このヘルパー関数をファイル末尾に追加することで、勝者を決定することができます。
+
+```
+function calculateWinner(squares) {
+  const lines = [
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+    [0, 3, 6],
+    [1, 4, 7],
+    [2, 5, 8],
+    [0, 4, 8],
+    [2, 4, 6],
+  ];
+  for (let i = 0; i < lines.length; i++) {
+    const [a, b, c] = lines[i];
+    if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
+      return squares[a];
+    }
+  }
+  return null;
+}
+```
+
+`calculateWinner(squares)`関数は、Boardのrender関数の中でプレイヤーが勝利したかチェックするためにコールします。
+プレイヤーが勝利していたら、その文章を表示します。
+以下のコードでBoardのrender関数内のstatus定義を置換します。
+
+```
+  render() {
+    const winner = calculateWinner(this.state.squares);
+    let status;
+    if (winner) {
+      status = 'Winner: ' + winner;
+    } else {
+      status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
+    }
+
+    return (
+      // the rest has not changed
+```
+
+どちらかがゲームに勝利済みか、Squareが既に埋められている場合、`handleClick`関数をclickを無視して早期にreturnするように変更しましょう。
+
+```
+  handleClick(i) {
+    const squares = this.state.squares.slice();
+    if (calculateWinner(squares) || squares[i]) {
+      return;
+    }
+    squares[i] = this.state.xIsNext ? 'X' : 'O';
+    this.setState({
+      squares: squares,
+      xIsNext: !this.state.xIsNext,
+    });
+  }
+```
+**[現時点での全コード](https://codepen.io/gaearon/pen/LyyXgK?editors=0010)**
+
+おめでとうございます！
+tic-tac-gameが遂に動作するようになりました。
+そしてReactの基礎を習得しました。
+そう、あなたは恐らく本当の勝者です。
+
 ## 時間遡行機能を追加する / Adding Time Travel
 ### 動作の履歴を記録する / Storing a History of Moves
 ### 再び、状態を移譲する / Lifting State Up, Again
