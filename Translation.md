@@ -757,7 +757,51 @@ tic-tac-gameが遂に動作するようになりました。
 そう、あなたは恐らく本当の勝者です。
 
 ## 時間遡行機能を追加する / Adding Time Travel
+
+最後の練習です。
+「時間遡行」で過去の手の状態に戻れるようにしましょう。
+
 ### 動作の履歴を記録する / Storing a History of Moves
+
+squares配列に変更を加えるなら、時間遡行機能の実装は非常に困難でしょう。
+
+しかし、一手毎に`slice()`を使用してsquares配列のコピーを生成し、不変として扱えばどうでしょう。
+全ての過去のバージョンのsquares配列の状態を保持することが可能です。更に、その状態へと導くこともできます。
+
+historyという名前の配列に、過去のsquares配列の状態を保持しましょう。
+history配列は初手から最終手までの全ボードの状態を表し、以下のような形式になります。
+
+```
+history = [
+  // Before first move
+  {
+    squares: [
+      null, null, null,
+      null, null, null,
+      null, null, null,
+    ]
+  },
+  // After first move
+  {
+    squares: [
+      null, null, null,
+      null, 'X', null,
+      null, null, null,
+    ]
+  },
+  // After second move
+  {
+    squares: [
+      null, null, null,
+      null, 'X', null,
+      null, null, 'O',
+    ]
+  },
+  // ...
+]
+```
+それでは、どのコンポーネントがhistoryを保持するのかを決めていきましょう。
+
 ### 再び、状態を移譲する / Lifting State Up, Again
 ### 過去の動作を表示する / Showing the Past Moves
 ### ピッキング / Picking a Key
