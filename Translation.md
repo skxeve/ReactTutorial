@@ -803,6 +803,111 @@ history = [
 それでは、どのコンポーネントがhistoryを保持するのかを決めていきましょう。
 
 ### 再び、状態を移譲する / Lifting State Up, Again
+
+トップレベルのGameコンポーネントに過去の動きのリストを表示したいと思います。
+表示にはhistoryにアクセスする必要があるため、historyはGameコンポーネントに配置します。
+
+historyをGameコンポーネントに配置するにあたり、squaresを子のBoardコンポーネントから取り除きます。
+「状態を移譲する / Lifting State Up」の時のように、BoardコンポーネントからGameコンポーネントに移譲を行います。
+これにより、GameコンポーネントにBoardデータの全コントロールを与えることになり、Gameからhistoryの状態をレンダリングするようBoardに命令することになります。
+
+最初に、Gameコンポーネントでstateの初期化を設定します。
+
+```
+class Game extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      history: [{
+        squares: Array(9).fill(null),
+      }],
+      xIsNext: true,
+    };
+  }
+
+  render() {
+    return (
+      <div className="game">
+        <div className="game-board">
+          <Board />
+        </div>
+        <div className="game-info">
+          <div>{/* status */}</div>
+          <ol>{/* TODO */}</ol>
+        </div>
+      </div>
+    );
+  }
+}
+```
+
+次に、GameコンポーネントのonClick propsとsquaresをBoardコンポーネントに渡します。
+今は各Squareに単一のclickハンドラがありますが、今後はどのSquareがクリックされたかを特定するための情報をonClickハンドラに渡す必要があります。
+次の手順にしたがってBoardコンポーネントを編集していきましょう。
+
+- Boardのコンストラクタを削除
+- BoardのrenderSquareメソッドにある`this.state.squares[i]`を`this.props.squares[i]`に置き換える。
+- BoardのrenderSquareメソッドにある`this.handleClick(i)`を`this.props.onClick(i)`に置き換える。
+
+現在、Boardコンポーネントは以下のようになっているはずです。
+
+```
+class Board extends React.Component {
+  handleClick(i) {
+    const squares = this.state.squares.slice();
+    if (calculateWinner(squares) || squares[i]) {
+      return;
+    }
+    squares[i] = this.state.xIsNext ? 'X' : 'O';
+    this.setState({
+      squares: squares,
+      xIsNext: !this.state.xIsNext,
+    });
+  }
+
+  renderSquare(i) {
+    return (
+      <Square
+        value={this.props.squares[i]}
+        onClick={() => this.props.onClick(i)}
+      />
+    );
+  }
+
+  render() {
+    const winner = calculateWinner(this.state.squares);
+    let status;
+    if (winner) {
+      status = 'Winner: ' + winner;
+    } else {
+      status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
+    }
+
+    return (
+      <div>
+        <div className="status">{status}</div>
+        <div className="board-row">
+          {this.renderSquare(0)}
+          {this.renderSquare(1)}
+          {this.renderSquare(2)}
+        </div>
+        <div className="board-row">
+          {this.renderSquare(3)}
+          {this.renderSquare(4)}
+          {this.renderSquare(5)}
+        </div>
+        <div className="board-row">
+          {this.renderSquare(6)}
+          {this.renderSquare(7)}
+          {this.renderSquare(8)}
+        </div>
+      </div>
+    );
+  }
+}
+```
+
+
 ### 過去の動作を表示する / Showing the Past Moves
 ### ピッキング / Picking a Key
 ### 時間遡行を実装する / Implementing Time Travel
