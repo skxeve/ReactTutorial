@@ -907,6 +907,95 @@ class Board extends React.Component {
 }
 ```
 
+Gameコンポーネントのrender関数を、最新のhistoryを使用して表示を行うように修正していきます。
+
+```
+  render() {
+    const history = this.state.history;
+    const current = history[history.length - 1];
+    const winner = calculateWinner(current.squares);
+
+    let status;
+    if (winner) {
+      status = 'Winner: ' + winner;
+    } else {
+      status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
+    }
+
+    return (
+      <div className="game">
+        <div className="game-board">
+          <Board
+            squares={current.squares}
+            onClick={(i) => this.handleClick(i)}
+          />
+
+        </div>
+        <div className="game-info">
+          <div>{status}</div>
+          <ol>{/* TODO */}</ol>
+        </div>
+      </div>
+    );
+  }
+```
+
+Gameコンポーネントはゲームの状態をレンダリングするようになったので、Boardのrenderメソッドから対応するコードを削除することができます。
+修正が終わると、Boardのrender関数は以下のようになっているはずです。
+
+```
+  render() {
+    return (
+      <div>
+        <div className="board-row">
+          {this.renderSquare(0)}
+          {this.renderSquare(1)}
+          {this.renderSquare(2)}
+        </div>
+        <div className="board-row">
+          {this.renderSquare(3)}
+          {this.renderSquare(4)}
+          {this.renderSquare(5)}
+        </div>
+        <div className="board-row">
+          {this.renderSquare(6)}
+          {this.renderSquare(7)}
+          {this.renderSquare(8)}
+        </div>
+      </div>
+    );
+  }
+```
+
+最後に、handleClickメソッドをBoardからGameコンポーネントに移す必要があります。
+Gameコンポーネントの仕組みが異なるため、handleClickを編集しましょう。
+GameでのhandleClickメソッドは、新しいhistoryをhistoryに連結していきます。
+
+```
+  handleClick(i) {
+    const history = this.state.history;
+    const current = history[history.length - 1];
+    const squares = current.squares.slice();
+    if (calculateWinner(squares) || squares[i]) {
+      return;
+    }
+    squares[i] = this.state.xIsNext ? 'X' : 'O';
+    this.setState({
+      history: history.concat([{
+        squares: squares,
+      }]),
+      xIsNext: !this.state.xIsNext,
+    });
+  }
+  ```
+
+>Note
+あなたが慣れ親しんでいるであろう配列のpush()メソッドと違い、concat()メソッドは元の配列を変更しないため、こちらを使用しています。
+
+この時点で、BoardコンポーネントはrenderSquareとrenderメソッドのみを必要としています。
+ゲームの状態とhandleClickメソッドはGameコンポーネントにあります。
+
+**[現時点での全コード](https://codepen.io/gaearon/pen/EmmOqJ?editors=0010)**
 
 ### 過去の動作を表示する / Showing the Past Moves
 ### ピッキング / Picking a Key
