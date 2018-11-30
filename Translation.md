@@ -998,6 +998,77 @@ GameでのhandleClickメソッドは、新しいhistoryをhistoryに連結して
 **[現時点での全コード](https://codepen.io/gaearon/pen/EmmOqJ?editors=0010)**
 
 ### 過去の動作を表示する / Showing the Past Moves
+
+tic-tac-toeゲームのhistoryを記録しているので、プレイヤーにこれまでの手の一覧を表示することができます。
+
+React要素はファーストクラスのJavaScriptオブジェクトであることを、我々は学びました。
+私たちはアプリケーションの中でそれらを受け渡すことができます。
+React要素の配列を使用することで、複数のアイテムをレンダリングすることができます。
+
+JavaScriptにおいて、全ての配列はおしなべて配列のデータをマッピングするための`map()`メソッドを所持しています。
+例えば以下のように動作します。
+
+```
+const numbers = [1, 2, 3];
+const doubled = numbers.map(x => x * 2); // [2, 4, 6]
+```
+
+mapメソッドを使用して、history配列を画面上でボタンとして表示されるReact要素にマッピングし、画面に表示して、クリックすると過去の状態に「ジャンプ」するようにしましょう。
+
+ではhistoryを、Gameのrenderメソッドでマッピングしてみましょう。
+
+```
+  render() {
+    const history = this.state.history;
+    const current = history[history.length - 1];
+    const winner = calculateWinner(current.squares);
+
+    const moves = history.map((step, move) => {
+      const desc = move ?
+        'Go to move #' + move :
+        'Go to game start';
+      return (
+        <li>
+          <button onClick={() => this.jumpTo(move)}>{desc}</button>
+        </li>
+      );
+    });
+
+    let status;
+    if (winner) {
+      status = 'Winner: ' + winner;
+    } else {
+      status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
+    }
+
+    return (
+      <div className="game">
+        <div className="game-board">
+          <Board
+            squares={current.squares}
+            onClick={(i) => this.handleClick(i)}
+          />
+        </div>
+        <div className="game-info">
+          <div>{status}</div>
+          <ol>{moves}</ol>
+        </div>
+      </div>
+    );
+  }
+```
+
+**[現時点での全コード](https://codepen.io/gaearon/pen/EmmGEa?editors=0010)**
+
+tic-tac-gameの手の履歴１つ１つから、`<button>`を含む`<li>`アイテムを作成します。
+ボタンは`onClick`ハンドラを持ち、ハンドラは`this.jumpTo()`をコールします。
+まだ`jumpTo()`メソッドは実装していません。
+今の所、ゲーム上で起きた手の一覧を見ることができ、developerツールのコンソール常に以下の警告が出るようになっているはずです。
+
+>Warning: Each child in an array or iterator should have a unique “key” prop. Check the render method of “Game”.
+
+上の警告が意味するところについて、これから論じていきます。
+
 ### ピッキング / Picking a Key
 ### 時間遡行を実装する / Implementing Time Travel
 ### ラッピング / Wrapping Up
