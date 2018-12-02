@@ -1124,4 +1124,109 @@ keyはグローバルにユニークである必要はありません。
 keysはコンポーネントと、その兄弟の間でユニークである必要があります。
 
 ### 時間遡行を実装する / Implementing Time Travel
+
+tic-tac-gameのhistoryでは、過去の手には固有のIDとして、連続する番号が与えられています。
+これらは並び替えられたり、削除されたり、途中に新しくデータが挿入されることはないため、これを使用しても問題ありません。
+
+Gameのrenderメソッドで、`<li key={move}>`としてkeyを追加し、Reactのkeysに関する警告を消し去ります。
+
+```
+    const moves = history.map((step, move) => {
+      const desc = move ?
+        'Go to move #' + move :
+        'Go to game start';
+      return (
+        <li key={move}>
+          <button onClick={() => this.jumpTo(move)}>{desc}</button>
+        </li>
+      );
+    });
+```
+
+**[現時点での全コード](https://codepen.io/gaearon/pen/PmmXRE?editors=0010)**
+
+jumpToメソッドをまだ定義していないので、リスト項目をクリックすると、エラーが表示されます。
+jumpToメソッドを実装する前に、stepNumberをGameコンポーネントのstateに追加して、現在表示しているステップを示します。
+
+まず、`stepNumber: 0`をGameのコンストラクタで定義します。
+
+```
+class Game extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      history: [{
+        squares: Array(9).fill(null),
+      }],
+      stepNumber: 0,
+      xIsNext: true,
+    };
+  }
+```
+
+Next, we’ll define the jumpTo method in Game to update that stepNumber.
+次にjumpToメソッドを定義し、そこでstepNumberを更新させます。
+更に、stepNumberが偶数である場合は、xIsNextをtrueに設定します。
+
+```
+  handleClick(i) {
+    // this method has not changed
+  }
+
+  jumpTo(step) {
+    this.setState({
+      stepNumber: step,
+      xIsNext: (step % 2) === 0,
+    });
+  }
+
+  render() {
+    // this method has not changed
+  }
+```
+
+squareをクリックした時に発火する、Gameの`handleClick`メソッドを少し変更しましょう。
+
+The stepNumber state we’ve added reflects the move displayed to the user now.
+追加したstepNumberは、ユーザーに表示している動作を反映します。
+新しい手を打つと、`this.setState`の引数の一部である`history.length`の追加によって、stepNumberを更新する必要があります。
+これにより、新しい手が打たれた後でも、同じ動作を表示することができます。
+
+`this.state.history` を `this.state.history.slice(0, this.state.stepNumber + 1)` に置き換えます。
+もし「時間遡行」を行ってその時点から新しい動きをするのであれば、確実にそれより未来のhistoryを破棄するようにします。
+
+```
+  handleClick(i) {
+    const history = this.state.history.slice(0, this.state.stepNumber + 1);
+    const current = history[history.length - 1];
+    const squares = current.squares.slice();
+    if (calculateWinner(squares) || squares[i]) {
+      return;
+    }
+    squares[i] = this.state.xIsNext ? 'X' : 'O';
+    this.setState({
+      history: history.concat([{
+        squares: squares
+      }]),
+      stepNumber: history.length,
+      xIsNext: !this.state.xIsNext,
+    });
+  }
+```
+
+最後に、Gameコンポーネントのrenderメソッドを、常に最後の動作をレンダリングする処理から、現在洗濯されているstepNumberの状態を表示する処理になるよう変更します。
+
+```
+  render() {
+    const history = this.state.history;
+    const current = history[this.state.stepNumber];
+    const winner = calculateWinner(current.squares);
+
+    // the rest has not changed
+```
+
+ゲーム履歴のステップがクリックされると、tic-tac-gameのボードが即座に更新され、その時点でのボードが表示される必要があります。
+
+**[現時点での全コード](https://codepen.io/gaearon/pen/gWWZgR?editors=0010)**
+
 ### ラッピング / Wrapping Up
