@@ -1164,7 +1164,6 @@ class Game extends React.Component {
   }
 ```
 
-Next, we’ll define the jumpTo method in Game to update that stepNumber.
 次にjumpToメソッドを定義し、そこでstepNumberを更新させます。
 更に、stepNumberが偶数である場合は、xIsNextをtrueに設定します。
 
@@ -1187,7 +1186,6 @@ Next, we’ll define the jumpTo method in Game to update that stepNumber.
 
 squareをクリックした時に発火する、Gameの`handleClick`メソッドを少し変更しましょう。
 
-The stepNumber state we’ve added reflects the move displayed to the user now.
 追加したstepNumberは、ユーザーに表示している動作を反映します。
 新しい手を打つと、`this.setState`の引数の一部である`history.length`の追加によって、stepNumberを更新する必要があります。
 これにより、新しい手が打たれた後でも、同じ動作を表示することができます。
@@ -1214,7 +1212,7 @@ The stepNumber state we’ve added reflects the move displayed to the user now.
   }
 ```
 
-最後に、Gameコンポーネントのrenderメソッドを、常に最後の動作をレンダリングする処理から、現在洗濯されているstepNumberの状態を表示する処理になるよう変更します。
+最後に、Gameコンポーネントのrenderメソッドを、常に最後の動作をレンダリングする処理から、現在選択されているstepNumberの状態を表示する処理になるよう変更します。
 
 ```
   render() {
