@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import './index.css';
 
 function Square(props) {
-  const style = this.props.isInWinnerLine ? { color: "red", } : {};
+  const style = this.props.isInWinnerLine ? { color: "blue", } : {};
   return (
     <button className="square" style={style} onClick={props.onClick}>
       {props.value}
