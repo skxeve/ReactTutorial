@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import './index.css';
 
 function Square(props) {
-  const style = this.props.isInWinnerLine ? { color: "blue", fontWeight: "bold", } : {};
+  const style = props.isInWinnerLine ? { color: "blue", fontWeight: "bold", } : {};
   return (
     <button className="square" style={style} onClick={props.onClick}>
       {props.value}
@@ -168,6 +168,6 @@ function calculateWinner(squares) {
   }
   return {
     winner: null,
-    line: null,
+    line: [],
   };
 }
