@@ -3,8 +3,9 @@ import ReactDOM from 'react-dom';
 import './index.css';
 
 function Square(props) {
+  const style = this.props.isInWinnerLine ? { color: "red", } : {};
   return (
-    <button className="square" onClick={props.onClick}>
+    <button className="square" style={style} onClick={props.onClick}>
       {props.value}
     </button>
   );
@@ -17,6 +18,7 @@ class Board extends React.Component {
         value={this.props.squares[i]}
         onClick={() => this.props.onClick(i)}
         key={i}
+        isInWinnerLine={this.props.winLine.indexOf(i) != -1}
       />
     );
   }
@@ -61,7 +63,7 @@ class Game extends React.Component {
     const history = this.state.history.slice(0, this.state.stepNumber + 1);
     const current = history[history.length - 1];
     const squares = current.squares.slice();
-    if (calculateWinner(squares) || squares[i]) {
+    if (calculateWinner(squares).winner || squares[i]) {
       return;
     }
     squares[i] = this.state.xIsNext ? 'X' : 'O';
@@ -91,7 +93,8 @@ class Game extends React.Component {
   render() {
     const history = this.state.history;
     const current = history[this.state.stepNumber];
-    const winner = calculateWinner(current.squares);
+    const calcWinner = calculateWinner(current.squares);
+
 
     var moves = history.map((step, move) => {
       const desc = move ?
@@ -110,8 +113,8 @@ class Game extends React.Component {
       moves = moves.reverse();
     }
 
-    const status = winner ?
-      'Winner: ' + winner :
+    const status = calcWinner.winner ?
+      'Winner: ' + calcWinner.winner :
       'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
 
     return (
@@ -119,6 +122,7 @@ class Game extends React.Component {
         <div className="game-board">
           <Board
             squares={current.squares}
+            winLine={calcWinner.line}
             onClick={(i) => this.handleClick(i)}
           />
         </div>
@@ -156,8 +160,14 @@ function calculateWinner(squares) {
   for (let i = 0; i < lines.length; i++) {
     const [a,b,c] = lines[i];
     if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-      return squares[a];
+      return {
+        winner: squares[a],
+        line: lines[i],
+      };
     }
   }
-  return null;
+  return {
+    winner: null,
+    line: null,
+  };
 }
