@@ -18,7 +18,7 @@ class Board extends React.Component {
         value={this.props.squares[i]}
         onClick={() => this.props.onClick(i)}
         key={i}
-        isInWinnerLine={this.props.winLine.indexOf(i) != -1}
+        isInWinnerLine={this.props.winLine.indexOf(i) !== -1}
       />
     );
   }
@@ -115,6 +115,8 @@ class Game extends React.Component {
 
     const status = calcWinner.winner ?
       'Winner: ' + calcWinner.winner :
+      calcWinner.isDraw ?
+      'Draw Game' :
       'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
 
     return (
@@ -163,11 +165,20 @@ function calculateWinner(squares) {
       return {
         winner: squares[a],
         line: lines[i],
+        isDraw: false,
       };
     }
   }
   return {
     winner: null,
     line: [],
+    isDraw: squares.reduce((accumulator, square) => {
+      if (accumulator) {
+        if (!square) {
+          return false;
+        }
+      }
+      return accumulator;
+    }, true),
   };
 }
